@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from '../models/user';
+import { User, RegistrationRequest, LoginResponse, LoginRequest } from '../models/user';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject } from 'rxjs';
@@ -14,24 +14,28 @@ export class AccountService {
   currentUser$ = this.currentUserSource.asObservable();
   constructor(private http : HttpClient) { }
 
-  login(model: User) {
-    return this.http.post<User>(this.baseUrl + 'authentication/login', model).pipe(
-      map((response: User) => {
+  login(model: LoginRequest) {
+    return this.http.post<LoginResponse>(this.baseUrl + 'authentication/login', model).pipe(
+      map((response: LoginResponse) => {
         const user = response;
         if(user) {
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUserSource.next(user);
+          console.clear();
+          console.log(user);
+          // localStorage.setItem('user', JSON.stringify(user));
+          // this.currentUserSource.next(user);
         }
       })
     )
   }
 
-  registerUser(model: User) {
-    return this.http.post<User>(this.baseUrl + 'authentication/register', model).pipe(
-      map((user : User) => {
+  registerUser(model: RegistrationRequest) {
+    return this.http.post<LoginResponse>(this.baseUrl + 'authentication/register', model).pipe(
+      map((user : LoginResponse) => {
         if(user) {
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUserSource.next(user);
+          console.clear();
+          console.log(user);
+          // localStorage.setItem('user', JSON.stringify(user));
+          // this.currentUserSource.next(user);
         }
       })
     );

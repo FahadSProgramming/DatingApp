@@ -29,7 +29,7 @@ namespace DatingApp.API.Controllers
             Country = "United States",
             Interests = "Fahad Sheikh",
             KnownAs = "Selena Fahad",
-            Gender = false,
+            Gender = "female",
             LookingFor = "Fahad Sheikh",
             Introduction = "Hi, I am Selena Gomez, Fahad Sheikh's wife"
             

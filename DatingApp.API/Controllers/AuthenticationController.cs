@@ -20,5 +20,14 @@ namespace DatingApp.API.Controllers {
             }
             return BadRequest();
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequest request) {
+            var result = await _authSerrvice.Login(request);
+            if(result.Success) {
+                return Ok(result);
+            }
+            return BadRequest();
+        }
     }
 }

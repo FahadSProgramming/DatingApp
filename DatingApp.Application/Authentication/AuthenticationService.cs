@@ -28,14 +28,14 @@ namespace DatingApp.Application.Authentication {
 
             var user = await _userManager.Users
                 .Include(p => p.Photos)
-                .Where(x => x.UserName.ToLowerInvariant() == request.UserName.ToLowerInvariant())
+                .Where(x => x.UserName.ToLower() == request.UserName.ToLower())
                 // .ProjectTo<AppUserDTO>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
 
             if (user == null) {
                 return FailedResult();
             }
-            var token = await _tokenService.GenerateToken(user);
+            var token = await _tokenService.GenerateToken(user, _userManager);
             return new LoginResponse {
                 Success = true,
                 User = _mapper.Map<AppUserDTO>(user),
@@ -59,7 +59,7 @@ namespace DatingApp.Application.Authentication {
                 return FailedResult();
             }
 
-            var token = await _tokenService.GenerateToken(user);
+            var token = await _tokenService.GenerateToken(user, _userManager);
             return new LoginResponse {
                 Success = true,
                 Token = token
@@ -67,7 +67,7 @@ namespace DatingApp.Application.Authentication {
         }
 
         public async Task<bool> UserExists(string userName) {
-            return await _userManager.Users.AnyAsync(x => x.UserName.ToLowerInvariant() == userName.ToLowerInvariant());
+            return await _userManager.Users.AnyAsync(x => x.UserName.ToLower() == userName.ToLower());
         }
 
         private LoginResponse FailedResult() {

@@ -25,6 +25,7 @@ builder.Services.AddCors();
 builder.Services.AddDbContext<DatingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLServerConnection")));
 builder.Services.AddScoped<ITokenService>(provider => new TokenService(symmetricKey));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddAutoMapper(typeof(DatingApp.Persistence.Helpers.AutoMapperProfiles).GetTypeInfo().Assembly);
 
 builder.Services.AddIdentityCore<AppUser>(options => {

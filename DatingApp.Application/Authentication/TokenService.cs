@@ -11,13 +11,11 @@ namespace DatingApp.Application.Authentication
     public class TokenService : ITokenService
     {
         private readonly SymmetricSecurityKey secretKey;
-        private readonly UserManager<AppUser> userManager;
-        public TokenService(SymmetricSecurityKey tokenGenerationKey, UserManager<AppUser> _userManager = null)
+        public TokenService(SymmetricSecurityKey tokenGenerationKey)
         {
             secretKey = tokenGenerationKey;
-            userManager = _userManager;
         }
-        public async Task<string> GenerateToken(AppUser user)
+        public async Task<string> GenerateToken(AppUser user, UserManager<AppUser> userManager)
         {
             var claims = new List<Claim>
             {
