@@ -7,12 +7,12 @@ namespace DatingApp.API.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private readonly ITokenService _tokenService;
+        private readonly IUserRepository _tokenService;
         private readonly ILogger<WeatherForecastController> _logger;
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, ITokenService tokenService)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IUserRepository userRepository)
         {
             _logger = logger;
-            _tokenService = tokenService;
+            _tokenService = userRepository;
         }
         private static readonly string[] Summaries = new[]
         {
@@ -20,16 +20,29 @@ namespace DatingApp.API.Controllers
     };
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IActionResult> Get()
         {
-            _tokenService.GenerateToken(new string[] { "hello", "world" });
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+
+            var user = new Persistence.DTO.AppUserDTO {
+            Username = "SelenaGomezFahad",
+            City = "California",
+            Country = "United States",
+            Interests = "Fahad Sheikh",
+            KnownAs = "Selena Fahad",
+            Gender = false,
+            LookingFor = "Fahad Sheikh",
+            Introduction = "Hi, I am Selena Gomez, Fahad Sheikh's wife"
+            
+            };
+            return Ok(
+            Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                
             })
-            .ToArray();
+            .ToArray());
         }
     }
 }

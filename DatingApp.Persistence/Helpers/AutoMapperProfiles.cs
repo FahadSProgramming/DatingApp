@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DatingApp.Core;
 using DatingApp.Persistence.DTO;
+using DatingApp.Persistence.DTO.Authentication;
 
 namespace DatingApp.Persistence.Helpers
 {
@@ -8,7 +9,12 @@ namespace DatingApp.Persistence.Helpers
     {
         public AutoMapperProfiles()
         {
-            CreateMap<AppUser, AppUserDTO>();
+            CreateMap<RegistrationRequest, AppUser>();
+            CreateMap<AppUserDTO, AppUser>();
+            CreateMap<AppUser, AppUserDTO>()
+                .ForMember(dest => dest.PhotoUrl, 
+                           opt => opt.MapFrom(src => 
+                           src.Photos.FirstOrDefault(photo => photo.IsMain).Url));
             CreateMap<Photo, PhotoDTO>();
         }
     }

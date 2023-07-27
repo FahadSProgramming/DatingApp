@@ -8,6 +8,8 @@ using System.Text;
 using DatingApp.Persistence.Data;
 using DatingApp.Application.Users;
 using System.Reflection;
+using DatingApp.Core;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 var symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenServiceKey"]));
@@ -19,10 +21,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
-builder.Services.AddDbContext<DatingContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<DatingContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<DatingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLServerConnection")));
 builder.Services.AddScoped<ITokenService>(provider => new TokenService(symmetricKey));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(typeof(DatingApp.Persistence.Helpers.AutoMapperProfiles).GetTypeInfo().Assembly);
+
+builder.Services.AddIdentityCore<AppUser>(options => {
+    options.Password.RequireNonAlphanumeric = false;
+})
+    .AddRoles<AppRole>()
+    .AddRoleManager<RoleManager<AppRole>>()
+    .AddEntityFrameworkStores<DatingContext>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -57,8 +68,10 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<DatingContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
     await context.Database.MigrateAsync();
-    await Seed.SeedUsers(context);
+    await Seed.SeedUsers(userManager, roleManager);
 } catch (Exception ex)
 {
     var logger = services.GetService<ILogger>();

@@ -1,13 +1,13 @@
-﻿using DatingApp.Core;
+﻿using DatingApp.Persistence.DTO;
 
 namespace DatingApp.Application.Interfaces
 {
     public interface IUserRepository
     {
-        void Update(AppUser user);
+        void Update(AppUserDTO user);
         Task<bool> SaveAllAsync();
-        Task<IEnumerable<AppUser>> GetUsersAsync();
-        Task<AppUser> GetUserByIdAsync(Guid userId);
-        Task<AppUser> GetUserByUsernameAsync(string username);
+        Task<IEnumerable<AppUserDTO>> GetUsersAsync();
+        Task<AppUserDTO> GetUserByIdAsync(Guid userId);
+        Task<AppUserDTO> GetUserByUsernameAsync(string username);
     }
 }
